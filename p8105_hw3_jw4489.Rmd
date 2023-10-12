@@ -44,8 +44,57 @@ view(instacart)
 ```
 
 ##### Describe the data.
+
 This dataset contains `r nrow(instacart)` rows and `r ncol(instacart)` columns. Each row represents a product from an instacart order. The dataset contains various variables, including "order_id", "product_id", "add_to_cart_order", "reordered", "user_id", "eval_set", "order_number", "order_row", "order_hour_of_day", etc. From these variables, several variables are order-level, meaning that they describe the day and time of the order, and number of days since prior order. And there are also several item-specific variables. These item-specific variables describe the product names (e.g. Bulgarian Yogurt, Spring Water), department of the products (e.g. dairy eggs, beverages), and aisles (e.g. yogurt, water seltzer sparkling water), and whether the item has been ordered by this user in the past. There are `r instacart |> select(product_id) |> distinct() |> count()` products found in `r instacart |> select(user_id, order_id) |> distinct() |> count()` orders from `r instacart |> select(user_id) |> distinct() |> count()` distinct users in total.
 
+##### Answer the questions.
+
+```{r}
+instacart |> 
+  count(aisle) |> 
+  arrange(desc(n))
+```
+
+There are 134 aisles. Fresh vegetables and fresh fruits are the aisles that the most items ordered from.
+
+```{r}
+instacart |> 
+  count(aisle) |> 
+  filter(n > 10000) |> 
+  mutate(aisle = fct_reorder(aisle, n)) |> 
+  ggplot(aes(x = aisle, y = n)) + 
+  geom_point() + 
+  labs(title = "Number of items ordered in each aisle") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+```
+
+The plot is made, with the number of items ordered in each aisle. And aisles are ordered by ascending number of items following the instruction.
+
+```{r}
+instacart |> 
+  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) |>
+  group_by(aisle) |> 
+  count(product_name) |> 
+  mutate(rank = min_rank(desc(n))) |> 
+  filter(rank < 4) |> 
+  arrange(desc(n)) |>
+  knitr::kable()
+```
+
+The table is made. It shows the three most popular items in aisles `baking ingredients`, `dog food care`, and `packaged vegetables fruits`, and includes the number of times each item is ordered in the table.
+
+```{r}
+instacart |>
+  filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) |>
+  group_by(product_name, order_dow) |>
+  summarize(mean_hour = mean(order_hour_of_day)) |>
+  pivot_wider(
+    names_from = order_dow, 
+    values_from = mean_hour) |>
+  knitr::kable(digits = 2)
+```
+
+The table is made. It shows the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week. This table has been formatted in an untidy manner for human readers. Pink Lady Apples are generally purchased slightly earlier in the day than Coffee Ice Cream, with the exception of day 5.
 
 ## Problem 2
 
