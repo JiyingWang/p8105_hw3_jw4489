@@ -40,9 +40,11 @@ instacart =
   instacart |> 
   as_tibble()
 
-instacart
+view(instacart)
 ```
 
+##### Describe the data.
+This dataset contains `r nrow(instacart)` rows and `r ncol(instacart)` columns. Each row represents a product from an instacart order. The dataset contains various variables, including "order_id", "product_id", "add_to_cart_order", "reordered", "user_id", "eval_set", "order_number", "order_row", "order_hour_of_day", etc. From these variables, several variables are order-level, meaning that they describe the day and time of the order, and number of days since prior order. And there are also several item-specific variables. These item-specific variables describe the product names (e.g. Bulgarian Yogurt, Spring Water), department of the products (e.g. dairy eggs, beverages), and aisles (e.g. yogurt, water seltzer sparkling water), and whether the item has been ordered by this user in the past. There are `r instacart |> select(product_id) |> distinct() |> count()` products found in `r instacart |> select(user_id, order_id) |> distinct() |> count()` orders from `r instacart |> select(user_id) |> distinct() |> count()` distinct users in total.
 
 
 ## Problem 2
