@@ -143,8 +143,33 @@ observed_2010
 According to two tables generated above, we know that PA, MA, NJ, CT, FL, NC were observed at 7 or more locations in 2002. In 2010, FL, NJ, TX, CA, MD, NC, NE, WA, MA, NY, OH, CO, PA, SC were observed at 7 or more locations.
 
 ```{r}
+excellent_response = brfss |>
+  filter(response == "Excellent") |>
+  group_by(year, locationabbr) |>
+  summarize(average = mean(data_value), .groups = "drop") |>
+  ggplot(aes(x = year, y = average, group = locationabbr, color = locationabbr)) + 
+  geom_line()+
+  labs(title = "Average Values Over Time Within a State",
+       x = "Year",
+       y = "Average Values") +
+  theme_minimal()
 
+excellent_response
 ```
+
+The dataset is constructed and the “spaghetti” plot is made. The dataset includes year, states, and average values of "excellent" responses over time within each state, and the plot is valuable and useful in providing information to the audience. According to the "spaghetti" plot, we can intuitively see that the average values of "excellent" responses present a downward trend overall. And we can also clearly see and compare each state's average value of "excellent" responses over time. 
+
+```{r}
+ny_value = brfss |>
+  filter(locationabbr == "NY",
+         year %in% c("2006", "2010"),
+         response %in% c("Poor", "Fair", "Good", "Very good", "Excellent"))
+
+ny_value
+```
+
+
+
 
 
 
