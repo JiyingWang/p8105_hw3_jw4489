@@ -114,13 +114,37 @@ brfss =
     response = factor(response, levels = c("Poor", "Fair", "Good", "Very good", "Excellent"), ordered = TRUE)
     )
 
-brfss
+view(brfss)
 ```
 
+##### Answer the questions.
 
+```{r}
+observed_2002 = brfss |>
+  group_by(year, locationabbr) |>
+  summarize(count = n_distinct(locationdesc), .groups = "drop") |>
+  filter(year == 2002, count  >=7) |>
+  arrange(desc(count)) |>
+  knitr::kable(col.names = c("Year_Observed", "State_Observed", "Counts"),
+               caption = "States that were observed at 7 or more locations in 2002")
 
+observed_2010 = brfss |>
+  group_by(year, locationabbr) |>
+  summarize(count = n_distinct(locationdesc), .groups = "drop") |>
+  filter(year == 2010, count  >=7) |>
+  arrange(desc(count)) |>
+  knitr::kable(col.names = c("Year_Observed", "State_Observed", "Counts"),
+               caption = "States that were observed at 7 or more locations in 2010")
 
+observed_2002
+observed_2010
+```
 
+According to two tables generated above, we know that PA, MA, NJ, CT, FL, NC were observed at 7 or more locations in 2002. In 2010, FL, NJ, TX, CA, MD, NC, NE, WA, MA, NY, OH, CO, PA, SC were observed at 7 or more locations.
+
+```{r}
+
+```
 
 
 
