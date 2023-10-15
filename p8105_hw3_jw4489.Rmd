@@ -225,6 +225,8 @@ education_table = education_number |>
 education_table
 ```
 
+After using the `knitr::kable` function, the table is easy and clear for others to read. This table has a title for "Number of men and women in each education category", which adds context to the table and helps users understand its purpose. It also includes column headers for "Sex," "Education," and "Counts." The "Sex" and "Education" columns provide categorical information, while the "Counts" column shows the number of individuals in each category.In addition, the table summarizes the count of men and women in each education level, making it easy to compare educational attainment between genders.
+
 ```{r}
 education_plot = nhanes |>
   ggplot(aes(x = education, y = age, fill = sex)) +
@@ -239,41 +241,42 @@ education_plot = nhanes |>
 education_plot
 ```
 
-**COMMENTS TO BE ADDED***
+After comparing different kinds of plots, I found that box plot can make better and more effective visualization for this dataset. Box plots are effective to display the distribution of the continuous variable (age) across different groups (education categories) and allow for the comparison of central tendencies, variability, and potential outliers. Its title, x-axis label, and y-axis label can also provide clear context for the plot, making it easy to understand. The plot generated in this step shows box plots for different education levels on the a-axis, with each category labeled ("less then high school", "high school equivalent", "more than high school"). The y-axis represents the age of individuals (The range showed in the plot is 20 to 80 years old). The box plots are filled with different colors to represent the gender (male and female), helping in visually comparing the age distributions of men and women within each education level. The title of this plot "age distributions for men and women in each education category" also provides audience with useful information. From this plot, we can also see that for people that are less than high school or high school equivalent, women have an average age which is larger than that of men. However, men have a larger average age than women in the people who have the degree that is higher than high school.
 
 ```{r}
 total_plot = nhanes |>
    mutate(
-    total = rowSums(across(min1:min1440), na.rm = TRUE)
+    activities = rowSums(across(min1:min1440))
     ) |>
-  ggplot(aes(x = age, y = total, color = sex)) +
+  ggplot(aes(x = age, y = activities, color = sex)) +
   geom_point(alpha = .5) +
   geom_smooth() +
   facet_grid(. ~ education) +
-  labs(title = "Total activity variable for each participant")
+  labs(title = "Total activity variable for each participant",
+       x = "Age",
+       y = "Total Activities")
 
 total_plot
 ```
 
-**COMMENTS TO BE ADDED***
+The plot compares the total activity variable (representing daily activity) against age for men and women across different education levels. The use of different colors for mea and women makes it easy to distinguish between the two genders on the plot. The inclusion of the smoothing curves provides a visual summary of the trends in the data. THese lines help in understanding the relationships between age and total activity, and comparing those for each gender and education level. Faceting by education levels allows for a separate view of the data for each subgroup, making it easier to identify any variations or patterns within different educational attainment categories.The title "total activity variable for each participant" and axis labels (minutes of total activities and ages) enhance the interpretability of the plot, providing a clear context for what is being visualized. From this plot, we can clearly the total activities trend downwardly as age getting older for all groups of people. Among the people who have high school degree or higher, female tend to have more total activity time then male. However, it is opposite among people who have degree that under high school.
 
 ```{r}
 activity_plot = nhanes |>
-  group_by(education, sex)|>
-  summarize(across(starts_with("min"), ~ mean(.), .names = "mean_{.col}"), .groups = "drop") |>
+  group_by (education, sex)|>
+  summarize(across(starts_with("min"), ~ mean(.), .names = "mean_{.col}"),.groups = "drop") |>
   pivot_longer(cols = starts_with("mean_"), names_to = "time", values_to = "mean")|>
-  mutate(
-    time = substring(time, 9),
-    time = as.numeric(time)
-  ) |>
+  mutate(time = substring(time, 9),
+         time = as.numeric(time)) |>
   ggplot(aes(x = time, y = mean, color = sex)) +
   geom_line() +
   facet_grid(. ~education) +
   labs(title = "24-hour activity time courses for each education level", 
-       x = "Time （minutes)",
-       y = "Mean value")
+       x = "Time (minutes)",
+       y = "Activity values")
 
 activity_plot
 ```
 
-**COMMENTS TO BE ADDED***
+This plot shows the 24-hour activity time courses for each education level, with sex indicated by color. From the plot, we can see that people who gain the degree below the high school have the highest activity time (around 750 minutes). We can also see that all kind of people follows the same pattern of activity times. 
+
