@@ -269,7 +269,8 @@ activity_plot = nhanes |>
   mutate(time = substring(time, 9),
          time = as.numeric(time)) |>
   ggplot(aes(x = time, y = mean, color = sex)) +
-  geom_line() +
+  geom_point(alpha = 0.5) +
+  geom_smooth() +
   facet_grid(. ~education) +
   labs(title = "24-hour activity time courses for each education level", 
        x = "Time (minutes)",
